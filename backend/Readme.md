@@ -1,0 +1,1 @@
+**1. import express file in index.js (or entrypoint) and then create an app using express**
