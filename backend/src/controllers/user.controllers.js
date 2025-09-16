@@ -2,6 +2,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.models.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 
 
@@ -44,8 +46,36 @@ const registerUser = asyncHandler(async (req, res) => {
         )
 })
 
+const generateAccessAndRefreshToken = async (userId) => {
+    try {
+        const user = await User.findbyId(userId);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        user.refreshToken = refreshToken;
+        await user.save({validateBeforeSave: false});
+
+        return {accessToken, refreshToken}
+    } catch (error) {
+        throw new ApiError(500, "Token generation failed");
+    }
+}
+
 const loginUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
+
+    const user = await User.findOne({ $or: [{ email: email?.toLowerCase() }, { username: username?.toLowerCase() }] });
+    if (!user) {
+        throw new ApiError(401, "User not found");
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Password Invalid");
+    }
+
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id);
+
 
     // validation
     
