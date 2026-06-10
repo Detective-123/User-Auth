@@ -6,7 +6,7 @@ import { Key, Eye, EyeOff, ArrowLeft, ShieldCheck, Check } from 'lucide-react';
  * Designed to be a standalone route (e.g., /settings/password)
  * @param {Function} onBack - Navigation function to return to settings
  */
-const UpdatePassword = ({ onBack }) => {
+const ChangePassword = ({ onBack }) => {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -43,7 +43,7 @@ const UpdatePassword = ({ onBack }) => {
             </div>
           </div>
           <h2 className="mt-4 text-2xl font-extrabold text-slate-900 tracking-tight">
-            Update Password
+            Change Password
           </h2>
           <p className="mt-2 text-xs text-slate-500">
             Choose a strong password to keep your account secure.
@@ -141,7 +141,7 @@ const UpdatePassword = ({ onBack }) => {
               {/* Password Requirements Hint */}
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <p className="text-[10px] text-slate-500 leading-relaxed">
-                  <span className="font-bold text-slate-700">Tip:</span> Use at least 8 characters, including a number and a symbol, to make your password stronger.
+                  <span className="font-bold text-slate-700">Tip:</span> Use at least 8 characters, including a number, to make your password stronger.
                 </p>
               </div>
 
@@ -151,7 +151,7 @@ const UpdatePassword = ({ onBack }) => {
                   type="submit"
                   className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-xl shadow-lg shadow-indigo-200 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all active:scale-[0.98]"
                 >
-                  {isSaved ? <><Check className="h-4 w-4 mr-2" />Password Updated</> : 'Update Password'}
+                  {isSaved ? <><Check className="h-4 w-4 mr-2" />Password Changed</> : 'Update Password'}
                 </button>
                 
                 <button
@@ -172,4 +172,4 @@ const UpdatePassword = ({ onBack }) => {
   );
 };
 
-export default UpdatePassword;
+export default ChangePassword;
