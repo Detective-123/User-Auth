@@ -18,7 +18,7 @@ const userSchema = new Schema(
     fullname: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     username: {
       type: String,
@@ -32,7 +32,7 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
     password: {
       type: String,
@@ -44,6 +44,11 @@ const userSchema = new Schema(
     isEmailVerified: {
       type: Boolean,
       default: false,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
     forgotPasswordToken: {
       type: String,
@@ -66,7 +71,7 @@ userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
     return;
   }
-  this.password = await bcrypt.hash(this.password, 10); 
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
 // method to compare given password with hashed password in database
@@ -78,7 +83,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
-      _id: this._id,      // payload
+      _id: this._id, // payload
       email: this.email,
       username: this.username,
     },
@@ -102,16 +107,16 @@ userSchema.methods.generateRefreshToken = function () {
 };
 
 userSchema.methods.generateTemporaryToken = function () {
-  const unHashedToken = crypto.randomBytes(20).toString("hex")
+  const unHashedToken = crypto.randomBytes(20).toString("hex");
 
   const hashedToken = crypto
     .createHash("sha256")
     .update(unHashedToken)
-    .digest("hex")
+    .digest("hex");
 
   const tokenExpiry = Date.now() + 20 * 60 * 1000; // 20 mins
 
-  return {unHashedToken, hashedToken, tokenExpiry};
+  return { unHashedToken, hashedToken, tokenExpiry };
 };
 
 export const User = mongoose.model("User", userSchema);
