@@ -414,6 +414,38 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
     );
 });
 
+const generateToken = (user) => {
+  jwt.sign(
+    { id: user._id, email: user.email},
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  )
+}
+
+const googleCallback = asyncHandler(async (req, res) => {
+  try {
+    const token = generateToken(req.user);
+    res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${token}`);
+
+    // Option B – HttpOnly cookie (more secure, uncomment to use)
+    // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "lax" });
+    // res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+  } catch (err) {
+    res.redirect(`${process.env.CLIENT_URL}/auth/error`);
+  }
+});
+
+/*
+export const getMe = async (req, res) => {
+  res.json({ user: req.user });
+};
+
+export const logout = (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out" });
+};
+*/
+
 const somethingFunc = asyncHandler(async (req, res) => {});
 
 export {
